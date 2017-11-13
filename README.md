@@ -19,5 +19,7 @@ https://ef.gy/linear-algebra:perspective-projections
 Some adjustments have been made, given the different libraries used and other factors, but it remains largely the same.
 
 ## Libraries Used
+
 Qt - For the rendering and displaying of interfaces
+
 Eigen - For matrix calculations
