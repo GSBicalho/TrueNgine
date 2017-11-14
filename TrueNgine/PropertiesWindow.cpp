@@ -167,6 +167,8 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 
 		QObject::connect(propertiesOfCut, SIGNAL(signalCutMovement(int, double)), this, SLOT(receiveCutLocationEditChange(int, double)));
 	}
+
+	emit signalRotationPlaneChange(0, 1);
 }
 
 void PropertiesWindow::receiveRotationChange(int index) {

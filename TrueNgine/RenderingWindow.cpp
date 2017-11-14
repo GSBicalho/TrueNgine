@@ -190,9 +190,9 @@ void RenderingWindow::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void RenderingWindow::moveCameraOrigin(int currentCamera, int changedIndex, double newValue) {
-	if (currentCamera == 3) {
-		//This should never occur
-	} else {
+	//Camera should never be smaller than four, 
+	//Because it receives the Dimension of the camera and not its index
+	if (currentCamera > 3) {
 		currentCamera -= 4;
 		camerasND.at(camerasND.size() - currentCamera - 1).Position(changedIndex) = newValue;
 
@@ -202,16 +202,13 @@ void RenderingWindow::moveCameraOrigin(int currentCamera, int changedIndex, doub
 
 		qDebug() << "Changing Origin of Dimension" << camerasND.at(camerasND.size() - currentCamera - 1).N;
 		qDebug() << "Position " << changedIndex << " = " << newValue;
-
-		//print(objectsToRender[0].currentVertices);
 	}
 }
 
 void RenderingWindow::moveCameraTarget(int currentCamera, int changedIndex, double newValue) {
-	if (currentCamera == 3) {
-		//This should never occur
-	}
-	else {
+	//Camera should never be smaller than four, 
+	//Because it receives the Dimension of the camera and not its index
+	if (currentCamera > 3) {
 		currentCamera -= 4;
 		camerasND.at(camerasND.size() - currentCamera - 1).Target(changedIndex) = newValue;
 		for (ObjectND* obj : (objectManager->currentObjects)) {
@@ -348,11 +345,6 @@ void RenderingWindow::openFile(QString openFile) {
 
 	generateCameras(objectManager->numberOfDimensions);
 	
-	for (int i = 0; i < camerasND.size(); i++) {
-		qDebug() << camerasND.size() - i + 3 << "D Camera Ups";
-		print(camerasND.at(i).Ups);
-	}
-	
 	if (objectManager->composingPolytopes.at(0)->size()) {
 		int polyD = objectManager->composingPolytopes.size() - 1;
 		int spaceD = objectManager->composingPolytopes.at(0)->at(0).size();
@@ -375,6 +367,7 @@ void RenderingWindow::openFile(QString openFile) {
 }
 
 void RenderingWindow::receiveRotationPlaneChange(int axis1, int axis2) {
+	qDebug() << "New Planes of Rotation: " << axis1 << " and " << axis2;
 	rotPlane1 = axis1;
 	rotPlane2 = axis2;
 }

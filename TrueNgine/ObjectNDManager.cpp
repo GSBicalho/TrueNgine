@@ -417,7 +417,6 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 	}
 
 	//Now we do Faces
-
 	if (currentComposingPolytopes->size() > 2) {
 		auto faceList = currentComposingPolytopes->at(2);
 
@@ -471,11 +470,13 @@ void ObjectNDManager::setUsingCulling(bool value) {
 		Eigen::MatrixXi faceListWithCulling(3, 0);
 
 		//after cuts
-		generateEdgeAndFaceLists(&composingPolytopes, edgeListWithoutCulling, edgeListWithCulling, faceListWithoutCulling, faceListWithCulling);
+		generateEdgeAndFaceLists(currentComposingPolytopes, edgeListWithoutCulling, edgeListWithCulling, faceListWithoutCulling, faceListWithCulling);
 
 		//Create object and add it to render list
 		currentObjects.at(0)->edgesWithCullingList = edgeListWithCulling;
 		currentObjects.at(0)->facesWithCullingList = faceListWithCulling;
+
+		hasCalculatedCulling = true;
 	}
 
 	for (ObjectND* obj : currentObjects) {
@@ -601,14 +602,13 @@ void ObjectNDManager::updateObjects(Eigen::VectorXd &cutsLocation, std::vector<c
 		currentComposingPolytopes = newComposingPolytopes;
 	}
 	
-	
-
 	Eigen::MatrixXi edgeListWithoutCulling(2, 0);
 	Eigen::MatrixXi edgeListWithCulling(2, 0);
 	Eigen::MatrixXi faceListWithoutCulling(3, 0);
 	Eigen::MatrixXi faceListWithCulling(3, 0);
 
 	//after cuts
+	hasCalculatedCulling = false;
 	generateEdgeAndFaceLists(currentComposingPolytopes, edgeListWithoutCulling, edgeListWithCulling, faceListWithoutCulling, faceListWithCulling);
 
 	//Create Vertex Matrix
@@ -617,6 +617,8 @@ void ObjectNDManager::updateObjects(Eigen::VectorXd &cutsLocation, std::vector<c
 		auto aux = currentComposingPolytopes->at(0)->at(i);
 		vertMatrix.col(i) = aux;
 	}
+
+	this->currentComposingPolytopes = currentComposingPolytopes;
 
 	//Create object and add it to render list
 	ObjectND* newObj = new ObjectND(this->numberOfDimensions, vertMatrix, edgeListWithoutCulling, edgeListWithCulling, faceListWithoutCulling, faceListWithCulling, camerasND, this->parent, this->renderingMode);

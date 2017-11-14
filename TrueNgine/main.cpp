@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
 	QSurfaceFormat format;
 	format.setSamples(16);
 
+	// Creating Windows
 	RenderingWindow renderingWindow;
 	renderingWindow.setFormat(format);
 	renderingWindow.resize(800, 600);
@@ -24,6 +25,7 @@ int main(int argc, char *argv[]) {
 	propertiesWindow.move(200, 200);
 	propertiesWindow.show();
 
+	// Connecting signals betweens windows
 	QObject::connect(&propertiesWindow, SIGNAL(signalCameraOriginMovement(int, int, double)),
 		&renderingWindow, SLOT(moveCameraOrigin(int, int, double)));
 

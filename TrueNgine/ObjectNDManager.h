@@ -16,6 +16,7 @@ public:
 
 	std::vector<std::vector<Eigen::VectorXd>*> composingPolytopes;
 
+	std::vector<std::vector<Eigen::VectorXd>*>* currentComposingPolytopes;
 	std::vector<class ObjectND*> currentObjects;
 
 	void updateObjects(Eigen::VectorXd &cuts_location, std::vector<class CameraND> camerasND);

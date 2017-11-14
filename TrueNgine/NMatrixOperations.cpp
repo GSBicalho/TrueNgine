@@ -9,116 +9,32 @@
 
 #define print(something) {std::stringstream ss; ss << something; qDebug() << ss.str().c_str(); }
 
-// TODO: Remake it using Eigen methods
+// This was based on https://ef.gy/linear-algebra:normal-vectors-in-higher-dimensional-spaces
 Eigen::VectorXd getNormalVector(Eigen::MatrixXd vectors) {
-	assert(vectors.rows() == vectors.cols() + 1); //Matrix size invalid. Must be (N, N-1)
+	assert(vectors.rows() == vectors.cols() + 1);
+	const unsigned int N = vectors.rows();
 
-	Eigen::MatrixXd pV = vectors.transpose();
-	const unsigned int d = vectors.rows();
-
-	//std::cout << "Normal -> pV:\n" << pV << "\n";
-
-	Eigen::MatrixXd pM = Eigen::MatrixXd::Zero(d, d);
-	Eigen::MatrixXd baseVectors = Eigen::MatrixXd::Zero(d, d);
-
-	for (unsigned int i = 0; i < (d - 1); i++) {
-		for (unsigned int j = 0; j < d; j++) {
-			pM(i, j) = pV(i, j);
-			baseVectors(i, j) = ((i == j) ? 1.f : 0.f);
-		}
-	}
-
-	for (unsigned int j = 0; j < d; j++) {
-		const unsigned int i = d - 1;
-		baseVectors(i, j) = ((i == j) ? 1.f : 0.f);
-	}
-
-	//std::cout << "Normal -> pM:\n" << pM << "\n";
-
-	Eigen::VectorXd rv = Eigen::VectorXd::Zero(d);
-
-	for (unsigned int i = 0; i < d; i++) {
-		Eigen::MatrixXd pS(d - 1, d - 1);
-
-		for (unsigned int j = 0, r = 0; j < (d - 1); j++, r++) {
-			for (unsigned int k = 0, c = 0; k < d; k++) {
-				if (k == i) {
-					continue;
-				}
-
-				pS(r, c) = pM(j, k);
-
-				c++;
-			}
-		}
-
-		if ((i % 2) == 0) {
-			rv += baseVectors.row(i) * pS.determinant();
-		}
-		else {
-			rv -= baseVectors.row(i) * pS.determinant();
-		}
-
-		//std::cout << "Normal -> pS " << i << ":\n" << pS << "\n";
-		//std::cout << "Normal -> pS" << i << " deteminant:\n" << pS.determinant() << "\n";
-		//std::cout << "Normal -> rV " << i << ":\n" << rv << "\n";
-	}
-
-	//std::cout << "Normal -> Result:\n" << rv << "\n";
-	return rv;
-
-	/*
-	std::cout << "Getting Normal Vector...\n";
-
-	std::cout << "Normal -> Vectors:\n" << vectors << "\n";
-
-	const int N = vectors.rows();
-
-	//Copy vectors to m and initialize its last column with zeroes
-	Eigen::MatrixXd m(N, N);
-	m.topLeftCorner(N, N - 1) = vectors;
-	m.rightCols(1) = Eigen::VectorXd::Zero(N);
-	std::cout << "Normal -> Starting Matrix:\n" << m << "\n";
-
-	//Initialize baseVectors with the Identity matrix
+	Eigen::MatrixXd pM = vectors.transpose();
+	pM.conservativeResize(pM.rows() + 1, Eigen::NoChange);
+	pM.row(N - 1) = Eigen::VectorXd::Zero(N);
 	Eigen::MatrixXd baseVectors = Eigen::MatrixXd::Identity(N, N);
 
-	Eigen::VectorXd returnVector = Eigen::VectorXd::Zero(N);
-	for (int i = 0; i < N; i++) {
-	Eigen::MatrixXd pS(N - 1, N - 1);
+	Eigen::VectorXd result = Eigen::VectorXd::Zero(N);
 
-	for (unsigned int j = 0, r = 0; j < (N - 1); j++, r++) {
-	for (unsigned int k = 0, c = 0; k < N; k++) {
-	if (k == i) {
-	continue;
+	int signal = 1;
+	for (unsigned int i = 0; i < N; i++) {
+		Eigen::MatrixXd pS(N - 1, N - 1);
+
+		for (unsigned int j = 0; j < (N - 1); j++) {
+			pS.block(j, 0, 1, i) = pM.block(j, 0, 1, i);
+			pS.block(j, i, 1, N - i - 1) = pM.block(j, i + 1, 1, N - i - 1);
+		}
+		
+		result += signal * baseVectors.row(i) * pS.determinant();
+		signal *= -1;
 	}
 
-	pS(r, c) = m(j, k);
-
-	c++;
-	}
-	}
-
-	std::cout << "Normal -> pS" << i << " deteminant:\n" << pS.determinant() << "\n";
-
-	if ((i % 2) == 0) {
-	returnVector += baseVectors.col(i) * pS.determinant();
-	} else {
-	returnVector -= baseVectors.col(i) * pS.determinant();
-	}
-
-	//pS.leftCols(i) = m.topLeftCorner(N - 1, i);
-	//pS.rightCols(N - i - 1) = m.topRightCorner(N - 1, N - i - 1);
-	//returnVector += ((i % 2 ? -1 : 1) * pS.determinant()) * baseVectors.col(i);
-
-	std::cout << "Normal -> pS " << i << ":\n" << pS << "\n";
-	std::cout << "Normal -> returnVector " << i << ":\n" << returnVector << "\n";
-	}
-
-	std::cout << "Normal -> Result:\n" << returnVector << "\n";
-	return returnVector;
-
-	*/
+	return result;
 }
 
 Eigen::MatrixXd translateMatrixN(int N, Eigen::VectorXd point) {
