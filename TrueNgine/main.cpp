@@ -44,6 +44,9 @@ int main(int argc, char *argv[]) {
 	QObject::connect(&renderingWindow, SIGNAL(signalPossibleNumberOfCuts(int)),
 		&propertiesWindow, SLOT(receiveNewMaxNumberOfCuts(int)));
 
+	QObject::connect(&renderingWindow, SIGNAL(signalRotation(double)),
+		&propertiesWindow, SLOT(receiveAddRotation(double)));
+
 	QObject::connect(&propertiesWindow, SIGNAL(signalCutLocationChange(int, double)),
 		&renderingWindow, SLOT(receiveCutLocationChange(int, double)));
 

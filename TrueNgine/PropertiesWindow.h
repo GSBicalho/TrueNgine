@@ -13,6 +13,7 @@ public:
 	void closeEvent(QCloseEvent *event);
 
 	class CameraNPropertyComponent* firstPropertyComponent;
+	class QLineEdit* rotationAmmountEdit;
 
 private:
 	Ui::PropertiesWindowClass ui;
@@ -46,7 +47,8 @@ private slots:
 	void receiveNewMaxNumberOfCuts(int num);
 	void receiveCutLocationEditChange(int N, double value);
 
-	void receiveRotationChange(int index);
+	void receiveRotationPlaneChange(int index);
+	void receiveAddRotation(double ammount);
 signals:
 	void signalCameraOriginMovement(int currentCamera, int changedIndex, double newValue);
 	void signalCameraTargetMovement(int currentCamera, int changedIndex, double newValue);

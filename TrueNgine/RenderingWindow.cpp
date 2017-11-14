@@ -132,6 +132,7 @@ void RenderingWindow::doMovement() {
 			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane2, rotPlane1, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
 		}
 		objectManager->updateObjects(cutLocations, camerasND);
+		emit signalRotation(-delta_time);
 	}
 
 	if (keys[OPENGL_WINDOW_E]) {
@@ -139,6 +140,8 @@ void RenderingWindow::doMovement() {
 			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane1, rotPlane2, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
 		}
 		objectManager->updateObjects(cutLocations, camerasND);
+
+		emit signalRotation(delta_time);
 	}
 
 	if (keys[OPENGL_WINDOW_O]) {
@@ -348,7 +351,7 @@ void RenderingWindow::openFile(QString openFile) {
 	if (objectManager->composingPolytopes.at(0)->size()) {
 		int polyD = objectManager->composingPolytopes.size() - 1;
 		int spaceD = objectManager->composingPolytopes.at(0)->at(0).size();
-		int maxPossibleCutsByPoly = polyD - 2;
+		int maxPossibleCutsByPoly = polyD - 1;
 		int numCutsBySpace = spaceD - 3;
 		
 		if (maxPossibleCutsByPoly < 0 && numCutsBySpace < 0) {

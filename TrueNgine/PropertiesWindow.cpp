@@ -97,15 +97,15 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 		QVBoxLayout* rotationLayout = new QVBoxLayout();
 		outerLayout->addLayout(rotationLayout);
 
-		QHBoxLayout* rotationLabelLayout = new QHBoxLayout();
-		rotationLayout->addLayout(rotationLabelLayout);
+		QHBoxLayout* rotationPickerLayout = new QHBoxLayout();
+		rotationLayout->addLayout(rotationPickerLayout);
 
 		QLabel* labelRot = new QLabel("Rotation Plane:");
-		rotationLabelLayout->addWidget(labelRot);
+		rotationPickerLayout->addWidget(labelRot);
 
 		QComboBox* cbRot = new QComboBox();
-		rotationLabelLayout->addWidget(cbRot);
-		connect(cbRot, SIGNAL(activated(int)), this, SLOT(receiveRotationChange(int)));
+		rotationPickerLayout->addWidget(cbRot);
+		connect(cbRot, SIGNAL(activated(int)), this, SLOT(receiveRotationPlaneChange(int)));
 
 		int numberOfDimensions = cutLocations.size() + cameras->size() + 3;
 
@@ -122,6 +122,23 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 				cbRot->addItem(str, QVariant::fromValue(axis));
 			}
 		}
+
+		QHBoxLayout* rotationObserverLayout = new QHBoxLayout();
+		rotationLayout->addLayout(rotationObserverLayout);
+
+		QLabel* labelDegrees = new QLabel("Degrees Rotated:");
+		rotationObserverLayout->addWidget(labelDegrees);
+
+		QLineEdit* lineEd = new QLineEdit("0.0");
+		rotationObserverLayout->addWidget(lineEd);
+		lineEd->setReadOnly(true);
+		
+		QPalette palette = lineEd->palette();
+		palette.setColor(QPalette::Base, palette.color(QPalette::Button));
+		palette.setColor(QPalette::Text, QPalette::WindowText);
+		lineEd->setPalette(palette);
+
+		rotationAmmountEdit = lineEd;
 	}
 
 	QWidget* horizontalLineWidget = new QWidget;
@@ -171,9 +188,21 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 	emit signalRotationPlaneChange(0, 1);
 }
 
-void PropertiesWindow::receiveRotationChange(int index) {
+void PropertiesWindow::receiveRotationPlaneChange(int index) {
 	QVector<int> planes = ((QComboBox*)QObject::sender())->itemData(index).value<QVector<int> >();
 	emit signalRotationPlaneChange(planes.at(0), planes.at(1));
+	rotationAmmountEdit->setText("0.0");
+}
+
+void PropertiesWindow::receiveAddRotation(double ammount) {
+	double angle = rotationAmmountEdit->text().toDouble() + qRadiansToDegrees(ammount);
+	if (angle > 360.f) {
+		angle -= 360.f;
+	} else if (angle < 0.f) {
+		angle += 360.f;
+	}
+
+	rotationAmmountEdit->setText(QString::number(angle));
 }
 
 void PropertiesWindow::receiveCutLocationEditChange(int N, double value) {

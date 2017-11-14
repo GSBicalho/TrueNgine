@@ -459,8 +459,6 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 	}
 }
 
-
-
 void ObjectNDManager::setUsingCulling(bool value) {
 	useCulling = value;
 	if (!hasCalculatedCulling && useCulling) {

@@ -81,4 +81,5 @@ signals:
 	void signal3DLocation(double ox, double oy, double oz, double tx, double ty, double tz);
 	void signalGenerateDimensionVieweing(std::vector<int> cutLocations, std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling);
 	void signalPossibleNumberOfCuts(int num);
+	void signalRotation(double angleInRadians);
 };
