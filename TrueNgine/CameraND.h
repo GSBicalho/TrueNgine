@@ -16,8 +16,7 @@ public:
 	double EyeAngle;
 
 	bool usePerspective;
-
-public:
+	
 	CameraND() {}
 
 	CameraND(

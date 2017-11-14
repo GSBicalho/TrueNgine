@@ -70,6 +70,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera3D.cpp" />
     <ClCompile Include="CameraND.cpp" />
     <ClCompile Include="CameraNPropertyComponent.cpp" />
     <ClCompile Include="CutNPropertyComponent.cpp" />
