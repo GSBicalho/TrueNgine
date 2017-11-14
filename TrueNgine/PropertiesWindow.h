@@ -45,6 +45,8 @@ private slots:
 
 	void receiveNewMaxNumberOfCuts(int num);
 	void receiveCutLocationEditChange(int N, double value);
+
+	void receiveRotationChange(int index);
 signals:
 	void signalCameraOriginMovement(int currentCamera, int changedIndex, double newValue);
 	void signalCameraTargetMovement(int currentCamera, int changedIndex, double newValue);
@@ -61,4 +63,6 @@ signals:
 	void signalOpenFile(QString fileName);
 	void signalNewNumberOfCuts(int num);
 	void signalCutLocationChange(int cameraIndex, double newValue);
+
+	void signalRotationPlaneChange(int axis1, int axis2);
 };

@@ -57,6 +57,9 @@ int main(int argc, char *argv[]) {
 	QObject::connect(&propertiesWindow, SIGNAL(signalOpenFile(QString)),
 		&renderingWindow, SLOT(receiveOpenFile(QString)));
 
+	QObject::connect(&propertiesWindow, SIGNAL(signalRotationPlaneChange(int, int)),
+		&renderingWindow, SLOT(receiveRotationPlaneChange(int, int)));
+
 	QObject::connect(&propertiesWindow, SIGNAL(signalClose()),
 		&renderingWindow, SLOT(doClose()));
 

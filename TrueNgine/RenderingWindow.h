@@ -42,6 +42,9 @@ private:
 	int lastX, lastY;
 	bool wasActive;
 
+	int rotPlane1 = 0;
+	int rotPlane2 = 1;
+
 	//class std::vector<class ObjectND>* objectsToRender;
 	class ObjectNDManager* objectManager;
 
@@ -68,6 +71,8 @@ public slots:
 	void receiveOpenFile(QString fileName);
 	void receiveNewNumberOfCuts(int numberOfCuts);
 	void receiveCutLocationChange(int index, double newValue);
+
+	void receiveRotationPlaneChange(int axis1, int axis2);
 
 	void receiveTest();
 

@@ -182,8 +182,8 @@ Eigen::MatrixXd lookAtMatrixN(const int N, Eigen::VectorXd from, Eigen::VectorXd
 	//print(m);
 
 	Eigen::MatrixXd temp = Eigen::MatrixXd::Identity(N + 1, N + 1);
-	m.leftCols(N - 1).rowwise().reverseInPlace();
-	temp.topLeftCorner(N, N) = -m;
+	//m.leftCols(N - 1).rowwise().reverseInPlace();
+	temp.topLeftCorner(N, N) = m;
 
 	return temp.transpose();
 }
@@ -232,8 +232,18 @@ Eigen::MatrixXd viewMatrixN(
 
 	auto pm = perspectiveMatrixN(N, eyeRadiansAngle, nearPlane, farPlane, aspectRatio);
 
-	auto result = pm * la * tr;
+	Eigen::MatrixXd result = pm * la * tr;
+	
+	//Axis direction correction
+	Eigen::MatrixXd aux = Eigen::MatrixXd::Identity(N + 1, N + 1);
+	//X correction
+	aux(0, 0) = -1;
+	//Z correction
+	aux(2, 2) = N != 4 ? -1 : 1;
+	result = aux * result;
 
+	//Z correction
+	
 	return result;
 }
 

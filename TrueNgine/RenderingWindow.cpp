@@ -48,7 +48,7 @@ void RenderingWindow::initialize() {
 	view_uniform = shaderProgram->uniformLocation("view");
 	proj_uniform = shaderProgram->uniformLocation("projection");
 
-	this->openFile("hypercube.ndp");
+	this->openFile("..\\..\\Libs\\Polytopes\\lines6.ndp");
 	
 
 }
@@ -129,14 +129,14 @@ void RenderingWindow::doMovement() {
 
 	if (keys[OPENGL_WINDOW_Q]) {
 		for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
-			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, 0, 1, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
+			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane2, rotPlane1, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
 		}
 		objectManager->updateObjects(cutLocations, camerasND);
 	}
 
 	if (keys[OPENGL_WINDOW_E]) {
 		for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
-			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, 2, 3, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
+			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane1, rotPlane2, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
 		}
 		objectManager->updateObjects(cutLocations, camerasND);
 	}
@@ -332,6 +332,9 @@ void RenderingWindow::openFile(QString openFile) {
 		delete objectManager;
 	}
 
+	rotPlane1 = 0;
+	rotPlane2 = 1;
+
 	std::string asStdString = openFile.toStdString();
 
 	std::ifstream inStream(asStdString);
@@ -345,6 +348,10 @@ void RenderingWindow::openFile(QString openFile) {
 
 	generateCameras(objectManager->numberOfDimensions);
 	
+	for (int i = 0; i < camerasND.size(); i++) {
+		qDebug() << camerasND.size() - i + 3 << "D Camera Ups";
+		print(camerasND.at(i).Ups);
+	}
 	
 	if (objectManager->composingPolytopes.at(0)->size()) {
 		int polyD = objectManager->composingPolytopes.size() - 1;
@@ -365,4 +372,9 @@ void RenderingWindow::openFile(QString openFile) {
 	Eigen::VectorXd aux(0);
 	cutLocations = aux;
 	objectManager->updateObjects(cutLocations, camerasND);
+}
+
+void RenderingWindow::receiveRotationPlaneChange(int axis1, int axis2) {
+	rotPlane1 = axis1;
+	rotPlane2 = axis2;
 }

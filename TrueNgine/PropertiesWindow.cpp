@@ -11,6 +11,9 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QLabel>
+#include <QComboBox>
+#include <QVector>
 
 #include <vector>
 
@@ -33,6 +36,21 @@ PropertiesWindow::PropertiesWindow(QWidget *parent) : QMainWindow(parent) {
 	//generateDimensionViewing(cameras, camera3D, true);
 }
 
+std::string getNameOfDimension(int i){
+	static const char cartesianDimensions[] =
+		"XYZWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba";
+
+	std::stringstream ss;
+
+	if (i < 52) {
+		ss << cartesianDimensions[i];
+	} else {
+		ss << i;
+	}
+
+	return ss.str();
+}
+
 void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, std::vector<CameraND> *cameras, Camera3D *camera3D, bool allowFaceculling) {
 	currentNumberOfCuts = cutLocations.size();
 
@@ -51,23 +69,62 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 		target3d(i) = camera3D->Position[i] + camera3D->Front[i];
 	}
 
-	QPushButton *testButton = new QPushButton("Do Test!");
-	area->layout()->addWidget(testButton);
-	connect(testButton, SIGNAL(released()), this, SLOT(receiveTestButton()));
+	//QPushButton *testButton = new QPushButton("Do Test!");
+	//area->layout()->addWidget(testButton);
+	//connect(testButton, SIGNAL(released()), this, SLOT(receiveTestButton()));
 
+	{
+		QWidget* w = new QWidget();
+		area->layout()->addWidget(w);
 
-	QCheckBox* checkboxFaceCulling = new QCheckBox("Face Culling");
-	checkboxFaceCulling->setChecked(false);
-	checkboxFaceCulling->setEnabled(allowFaceculling);
-	area->layout()->addWidget(checkboxFaceCulling);
-	QObject::connect(checkboxFaceCulling, SIGNAL(stateChanged(int)), this, SLOT(changedFaceCulling(int)));
+		QHBoxLayout* outerLayout = new QHBoxLayout();
+		w->setLayout(outerLayout);
 
-	QCheckBox* checkboxWireframe = new QCheckBox("Wireframe");
-	checkboxWireframe->setChecked(true);
-	area->layout()->addWidget(checkboxWireframe);
-	QObject::connect(checkboxWireframe, SIGNAL(stateChanged(int)), this, SLOT(changedWireframe(int)));
+		QVBoxLayout* checkboxLayout = new QVBoxLayout();
+		outerLayout->addLayout(checkboxLayout);
 
-	QWidget *horizontalLineWidget = new QWidget;
+		QCheckBox* checkboxFaceCulling = new QCheckBox("Face Culling");
+		checkboxFaceCulling->setChecked(false);
+		checkboxFaceCulling->setEnabled(allowFaceculling);
+		checkboxLayout->addWidget(checkboxFaceCulling);
+		QObject::connect(checkboxFaceCulling, SIGNAL(stateChanged(int)), this, SLOT(changedFaceCulling(int)));
+
+		QCheckBox* checkboxWireframe = new QCheckBox("Wireframe");
+		checkboxWireframe->setChecked(true);
+		checkboxLayout->addWidget(checkboxWireframe);
+		QObject::connect(checkboxWireframe, SIGNAL(stateChanged(int)), this, SLOT(changedWireframe(int)));
+
+		QVBoxLayout* rotationLayout = new QVBoxLayout();
+		outerLayout->addLayout(rotationLayout);
+
+		QHBoxLayout* rotationLabelLayout = new QHBoxLayout();
+		rotationLayout->addLayout(rotationLabelLayout);
+
+		QLabel* labelRot = new QLabel("Rotation Plane:");
+		rotationLabelLayout->addWidget(labelRot);
+
+		QComboBox* cbRot = new QComboBox();
+		rotationLabelLayout->addWidget(cbRot);
+		connect(cbRot, SIGNAL(activated(int)), this, SLOT(receiveRotationChange(int)));
+
+		int numberOfDimensions = cutLocations.size() + cameras->size() + 3;
+
+		for (int i = 0; i < numberOfDimensions; i++) {
+			std::string nameDim1 = getNameOfDimension(i);
+			for (int j = i + 1; j < numberOfDimensions; j++) {
+				std::string nameDim2 = getNameOfDimension(j);
+				QString str = QString((nameDim1 + "-" + nameDim2).c_str());
+
+				QVector<int> axis;
+				axis.append(i);
+				axis.append(j);
+
+				cbRot->addItem(str, QVariant::fromValue(axis));
+			}
+		}
+	}
+
+	QWidget* horizontalLineWidget = new QWidget;
 	horizontalLineWidget->setFixedHeight(2);
 	horizontalLineWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	horizontalLineWidget->setStyleSheet(QString("background-color: #c0c0c0;"));
@@ -110,6 +167,11 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 
 		QObject::connect(propertiesOfCut, SIGNAL(signalCutMovement(int, double)), this, SLOT(receiveCutLocationEditChange(int, double)));
 	}
+}
+
+void PropertiesWindow::receiveRotationChange(int index) {
+	QVector<int> planes = ((QComboBox*)QObject::sender())->itemData(index).value<QVector<int> >();
+	emit signalRotationPlaneChange(planes.at(0), planes.at(1));
 }
 
 void PropertiesWindow::receiveCutLocationEditChange(int N, double value) {

@@ -370,15 +370,19 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 	Eigen::MatrixXi &faceListWithCulling) {
 
 	auto edgeList = currentComposingPolytopes->at(1);
-	auto faceList = currentComposingPolytopes->at(2);
+	
 
 	bool* edgeIsShared = new bool[currentComposingPolytopes->at(1)->size()];
-	bool* faceIsShared = new bool[currentComposingPolytopes->at(2)->size()];
+	int sizeFaces = 0;
+	if (currentComposingPolytopes->size() > 2) {
+		sizeFaces = currentComposingPolytopes->at(2)->size();
+	}
+	bool* faceIsShared = new bool[sizeFaces];
 
 	for (int i = 0; i < currentComposingPolytopes->at(1)->size(); i++) {
 		edgeIsShared[i] = false;
 	}
-	for (int i = 0; i < currentComposingPolytopes->at(2)->size(); i++) {
+	for (int i = 0; i < sizeFaces; i++) {
 		faceIsShared[i] = false;
 	}
 
@@ -395,10 +399,7 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 	for (int i = 0; i < currentComposingPolytopes->at(1)->size(); i++) {
 		sizeEdgeListWithCulling += !edgeIsShared[i] ? 1 : 0;
 	}
-	for (int i = 0; i < currentComposingPolytopes->at(2)->size(); i++) {
-		sizeFaceListWithoutCulling += currentComposingPolytopes->at(2)->at(i).size() - 2;
-		sizeFaceListWithCulling += (!faceIsShared[i] ? 1 : 0) * (currentComposingPolytopes->at(2)->at(i).size() - 2);
-	}
+	
 
 	//Create lists. Here we create and mantain in memory the list of edges with culling and without,
 	//Because it is faster than recalculating it every time we change rendering
@@ -416,35 +417,45 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 	}
 
 	//Now we do Faces
-	int faceCullCount = 0;
-	int faceNoCullCount = 0;
 
-	faceListWithoutCulling.conservativeResize(3, sizeFaceListWithoutCulling);
-	faceListWithCulling.conservativeResize(3, sizeFaceListWithCulling);
-	for (int i = 0; i < faceList->size(); i++) {
-		auto currentFace = faceList->at(i);
+	if (currentComposingPolytopes->size() > 2) {
+		auto faceList = currentComposingPolytopes->at(2);
 
-		int numberOfTrianglesInThisFace = currentFace.size() - 2;
-		Eigen::MatrixXi trianglesList(3, numberOfTrianglesInThisFace);
-		int currentLocationOnTrianglesList = 0;
-
-		int baseVertex = (int)edgeList->at(currentFace(0))(0);
-
-		for (int j = 1; j < currentFace.size() && currentLocationOnTrianglesList != numberOfTrianglesInThisFace; j++) {
-			Eigen::VectorXi currentEdge = edgeList->at(currentFace(j)).cast<int>();
-			if (!(currentEdge(0) == baseVertex || currentEdge(1) == baseVertex)) {
-				Eigen::VectorXi auxVec(3);
-				auxVec << baseVertex, currentEdge(0), currentEdge(1);
-				trianglesList.col(currentLocationOnTrianglesList) = auxVec;
-				currentLocationOnTrianglesList++;
-			}
+		for (int i = 0; i < currentComposingPolytopes->at(2)->size(); i++) {
+			sizeFaceListWithoutCulling += currentComposingPolytopes->at(2)->at(i).size() - 2;
+			sizeFaceListWithCulling += (!faceIsShared[i] ? 1 : 0) * (currentComposingPolytopes->at(2)->at(i).size() - 2);
 		}
 
-		faceListWithoutCulling.middleCols(faceNoCullCount, numberOfTrianglesInThisFace) = trianglesList;
-		faceNoCullCount += numberOfTrianglesInThisFace;
-		if (!faceIsShared[i]) {
-			faceListWithCulling.middleCols(faceCullCount, numberOfTrianglesInThisFace) = trianglesList;
-			faceCullCount += numberOfTrianglesInThisFace;
+		int faceCullCount = 0;
+		int faceNoCullCount = 0;
+
+		faceListWithoutCulling.conservativeResize(3, sizeFaceListWithoutCulling);
+		faceListWithCulling.conservativeResize(3, sizeFaceListWithCulling);
+		for (int i = 0; i < faceList->size(); i++) {
+			auto currentFace = faceList->at(i);
+
+			int numberOfTrianglesInThisFace = currentFace.size() - 2;
+			Eigen::MatrixXi trianglesList(3, numberOfTrianglesInThisFace);
+			int currentLocationOnTrianglesList = 0;
+
+			int baseVertex = (int)edgeList->at(currentFace(0))(0);
+
+			for (int j = 1; j < currentFace.size() && currentLocationOnTrianglesList != numberOfTrianglesInThisFace; j++) {
+				Eigen::VectorXi currentEdge = edgeList->at(currentFace(j)).cast<int>();
+				if (!(currentEdge(0) == baseVertex || currentEdge(1) == baseVertex)) {
+					Eigen::VectorXi auxVec(3);
+					auxVec << baseVertex, currentEdge(0), currentEdge(1);
+					trianglesList.col(currentLocationOnTrianglesList) = auxVec;
+					currentLocationOnTrianglesList++;
+				}
+			}
+
+			faceListWithoutCulling.middleCols(faceNoCullCount, numberOfTrianglesInThisFace) = trianglesList;
+			faceNoCullCount += numberOfTrianglesInThisFace;
+			if (!faceIsShared[i]) {
+				faceListWithCulling.middleCols(faceCullCount, numberOfTrianglesInThisFace) = trianglesList;
+				faceCullCount += numberOfTrianglesInThisFace;
+			}
 		}
 	}
 }
