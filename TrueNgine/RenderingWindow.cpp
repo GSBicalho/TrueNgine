@@ -48,7 +48,7 @@ void RenderingWindow::initialize() {
 	view_uniform = shaderProgram->uniformLocation("view");
 	proj_uniform = shaderProgram->uniformLocation("projection");
 
-	this->openFile("..\\..\\Libs\\Polytopes\\lines6.ndp");
+	this->openFile("hypercube.ndp");
 	
 
 }
