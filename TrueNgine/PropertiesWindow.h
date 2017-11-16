@@ -22,12 +22,12 @@ private:
 	int currentNumberOfCuts = 0;
 	int numberOfCameras = 0;
 
-	void generateDimensionViewing(class std::vector<int> cutLocations, class std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling);
+	void generateDimensionViewing(class std::vector<int> cutLocations, class std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling, double maxValue);
 
 private slots:
 	void doClose();
 
-	void receiveGenerateDimensionVieweing(class std::vector<int> cutLocations, class std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling);
+	void receiveGenerateDimensionVieweing(class std::vector<int> cutLocations, class std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling, double maxValue);
 
 	void receiveCameraOriginMovement(int currentCamera, int changedIndex, double newValue);
 	void receiveCameraTargetMovement(int currentCamera, int changedIndex, double newValue);

@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
 	QObject::connect(&renderingWindow, SIGNAL(signal3DLocation(double, double, double, double, double, double)),
 		&propertiesWindow, SLOT(receiveChangedFirstThreePositions(double, double, double, double, double, double)));
 
-	QObject::connect(&renderingWindow, SIGNAL(signalGenerateDimensionVieweing(std::vector<int>, std::vector<CameraND> *, Camera3D *, bool)),
-		&propertiesWindow, SLOT(receiveGenerateDimensionVieweing(std::vector<int>, std::vector<CameraND> *, Camera3D *, bool)));
+	QObject::connect(&renderingWindow, SIGNAL(signalGenerateDimensionVieweing(std::vector<int>, std::vector<CameraND> *, Camera3D *, bool, double)),
+		&propertiesWindow, SLOT(receiveGenerateDimensionVieweing(std::vector<int>, std::vector<CameraND> *, Camera3D *, bool, double)));
 
 	QObject::connect(&renderingWindow, SIGNAL(signalPossibleNumberOfCuts(int)),
 		&propertiesWindow, SLOT(receiveNewMaxNumberOfCuts(int)));

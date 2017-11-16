@@ -51,7 +51,7 @@ std::string getNameOfDimension(int i){
 	return ss.str();
 }
 
-void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, std::vector<CameraND> *cameras, Camera3D *camera3D, bool allowFaceculling) {
+void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, std::vector<CameraND> *cameras, Camera3D *camera3D, bool allowFaceculling, double maxValue) {
 	currentNumberOfCuts = cutLocations.size();
 
 	// Setting up Dimension viewing
@@ -179,7 +179,7 @@ void PropertiesWindow::generateDimensionViewing(std::vector<int> cutLocations, s
 
 		area->layout()->addWidget(horizontalLineWidget);
 
-		CutNPropertyComponent* propertiesOfCut = new CutNPropertyComponent(cameras->size() + i + 4, 0.f);
+		CutNPropertyComponent* propertiesOfCut = new CutNPropertyComponent(cameras->size() + i + 4, 0.f, maxValue + 0.1);
 		area->layout()->addWidget(propertiesOfCut);
 
 		QObject::connect(propertiesOfCut, SIGNAL(signalCutMovement(int, double)), this, SLOT(receiveCutLocationEditChange(int, double)));
@@ -213,8 +213,8 @@ void PropertiesWindow::receiveTestButton() {
 	emit signalTest();
 }
 
-void PropertiesWindow::receiveGenerateDimensionVieweing(std::vector<int> cutLocations, std::vector<CameraND> *cameras, Camera3D *camera3D, bool allowFaceculling) {
-	generateDimensionViewing(cutLocations, cameras, camera3D, allowFaceculling);
+void PropertiesWindow::receiveGenerateDimensionVieweing(std::vector<int> cutLocations, std::vector<CameraND> *cameras, Camera3D *camera3D, bool allowFaceculling, double maxValue) {
+	generateDimensionViewing(cutLocations, cameras, camera3D, allowFaceculling, maxValue);
 }
 
 void PropertiesWindow::closeEvent(QCloseEvent *event) {

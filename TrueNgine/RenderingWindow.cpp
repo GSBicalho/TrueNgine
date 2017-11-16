@@ -317,7 +317,15 @@ void RenderingWindow::receiveNewNumberOfCuts(int numberOfCuts) {
 
 	qDebug() << "New Number Of Cuts: " << numberOfCuts;
 
-	emit signalGenerateDimensionVieweing(cutLocationsVector, &camerasND, camera3D, isAllowingFaceculling);
+	double maxValue = 0.0;
+	for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
+		double maxCoeff = objectManager->composingPolytopes.at(0)->at(i).norm();
+		if (abs(maxCoeff) > maxValue) {
+			maxValue = maxCoeff;
+		}
+	}
+
+	emit signalGenerateDimensionVieweing(cutLocationsVector, &camerasND, camera3D, true, maxValue);
 }
 
 void RenderingWindow::receiveCutLocationChange(int index, double newValue) {
@@ -361,8 +369,16 @@ void RenderingWindow::openFile(QString openFile) {
 		}
 	}
 
+	double maxValue = 0.0;
+	for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
+		double maxCoeff = objectManager->composingPolytopes.at(0)->at(i).norm();
+		if (abs(maxCoeff) > maxValue) {
+			maxValue = maxCoeff;
+		}
+	}
+
 	std::vector<int> cutLocationsVector;
-	emit signalGenerateDimensionVieweing(cutLocationsVector, &camerasND, camera3D, isAllowingFaceculling);
+	emit signalGenerateDimensionVieweing(cutLocationsVector, &camerasND, camera3D, true, maxValue);
 
 	Eigen::VectorXd aux(0);
 	cutLocations = aux;
