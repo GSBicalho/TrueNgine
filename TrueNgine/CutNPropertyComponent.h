@@ -6,6 +6,8 @@ class CutNPropertyComponent : public QWidget
 {
 	Q_OBJECT
 public:
+	const int sliderMultiplier = 100;
+
 	CutNPropertyComponent(int N, double startingValue, double maxValue);
 	~CutNPropertyComponent();
 private:

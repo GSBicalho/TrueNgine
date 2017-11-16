@@ -46,7 +46,7 @@ CutNPropertyComponent::CutNPropertyComponent(int N, double startingValue, double
 	slider = new QSlider(Qt::Horizontal);
 	outerLayout->addWidget(slider);
 
-	slider->setRange(-maxValue * 100, maxValue * 100);
+	slider->setRange(-maxValue * sliderMultiplier, maxValue * sliderMultiplier);
 	slider->setValue(startingValue);
 
 	QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(changedSliderValue(int)));
@@ -55,7 +55,7 @@ CutNPropertyComponent::CutNPropertyComponent(int N, double startingValue, double
 void CutNPropertyComponent::changedEditValue(const QString & newValue) {
 	qDebug() << "CHANGED TEXT";
 
-	slider->setValue((int)(newValue.toDouble() * 100));
+	slider->setValue((int)(newValue.toDouble() * sliderMultiplier));
 
 	emit signalCutMovement(dimension, newValue.toDouble());
 }
@@ -63,7 +63,7 @@ void CutNPropertyComponent::changedEditValue(const QString & newValue) {
 void CutNPropertyComponent::changedSliderValue(int newValue) {
 	qDebug() << "CHANGED SLIDER";
 	double aux = newValue;
-	aux /= 100.0;
+	aux /= sliderMultiplier;
 
 	textEdit->setText(QString::number(aux));
 
