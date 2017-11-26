@@ -312,10 +312,10 @@ ObjectNDManager::~ObjectNDManager() {
 }
 
 void ObjectNDManager::printStructure() {
-	for (int i = 0; i < composingPolytopes.size(); i++) {
+	for (int i = 0; i < currentComposingPolytopes->size(); i++) {
 		print("LAYER " << i);
-		for (int j = 0; j < composingPolytopes.at(i)->size(); j++) {
-			print(j << ": " << composingPolytopes.at(i)->at(j).transpose());
+		for (int j = 0; j < currentComposingPolytopes->at(i)->size(); j++) {
+			print(j << ": " << currentComposingPolytopes->at(i)->at(j).transpose());
 		}
 	}
 }
