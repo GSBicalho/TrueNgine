@@ -25,6 +25,8 @@
 PropertiesWindow::PropertiesWindow(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 
+	this->setWindowTitle("Properties Window");
+
 	// Setting up Menu Bar
 	QMenuBar* mainMenuBar = this->findChild<QMenuBar*>("menuBar");
 	QMenu* fileMenu = mainMenuBar->findChild<QMenu*>("menuFile");
