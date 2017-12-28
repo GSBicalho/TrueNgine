@@ -30,8 +30,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>C:\dev\qhull-2015.2\src;C:\dev\eigen-eigen;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev\qhull-2015.2\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(EIGENDIR);$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>

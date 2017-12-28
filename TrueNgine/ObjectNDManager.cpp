@@ -11,16 +11,6 @@
 #include "CameraND.h"
 #include "NMatrixOperations.h"
 
-#include <libqhullcpp/RboxPoints.h>
-#include <libqhullcpp/QhullError.h>
-#include <libqhullcpp/QhullQh.h>
-#include <libqhullcpp/QhullFacet.h>
-#include <libqhullcpp/QhullFacetList.h>
-#include <libqhullcpp/QhullLinkedList.h>
-#include <libqhullcpp/QhullVertex.h>
-#include <libqhullcpp/QhullVertexSet.h>
-#include <libqhullcpp/Qhull.h>
-
 #define print(something) {std::stringstream ss; ss << std::setprecision(20); ss << something; qDebug() << ss.str().c_str(); }
 
 void setTrueIfShared(bool* arrayToSet, Eigen::VectorXd *v1, Eigen::VectorXd *v2) {
