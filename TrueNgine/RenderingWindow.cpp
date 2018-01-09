@@ -326,6 +326,8 @@ void RenderingWindow::receiveNewNumberOfCuts(int numberOfCuts) {
 	}
 
 	emit signalGenerateDimensionVieweing(cutLocationsVector, &camerasND, camera3D, true, maxValue);
+
+	
 }
 
 void RenderingWindow::receiveCutLocationChange(int index, double newValue) {

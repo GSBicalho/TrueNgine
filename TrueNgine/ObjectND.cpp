@@ -55,7 +55,13 @@ ObjectND::ObjectND(unsigned int N,
 	this->setRenderingMode(renderingMode);
 }
 
-ObjectND::~ObjectND(){}
+ObjectND::~ObjectND(){
+	VAO->destroy();
+	VBO->destroy();
+	EBO->destroy();
+	delete useCulling;
+	delete renderingMode;
+}
 
 void ObjectND::initializeOpenGL() {
 	//Create VAO, VBO and EBO

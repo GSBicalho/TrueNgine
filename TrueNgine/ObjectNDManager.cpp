@@ -92,6 +92,7 @@ ObjectNDManager::ObjectNDManager(int typeExtenson, std::ifstream &inStream, clas
 	this->renderingMode = OBJECTND_RENDERINGMODE_LINES;
 	this->hasCalculatedCulling = false;
 	this->useCulling = false;
+	this->currentComposingPolytopes = NULL;
 
 	if (typeExtenson == OBJECTNDMANAGER_NDP_FORMAT) {
 		print("READING NDP");
@@ -293,12 +294,30 @@ void ObjectNDManager::readFromPOLFormatStream(std::ifstream &inStream) {
 
 			// Starts next Polytope
 			currentPolytope++;
+			delete mappingOfCurrentPolytopesToGlobal;
 		}
 		inStream >> currentPolytopeLabel;
 	}
+
+	for(auto aux : composingPolytopeToIndexMap)
+		delete aux;
 }
 
 ObjectNDManager::~ObjectNDManager() {
+	print(composingPolytopes.size());
+	for(auto aux : composingPolytopes)
+		delete aux;
+
+	print(currentComposingPolytopes->size());
+	for (auto aux : *currentComposingPolytopes) {
+		aux->clear();
+		delete aux;
+	}
+	currentComposingPolytopes->clear();
+	delete currentComposingPolytopes;
+
+	for (auto aux : currentObjects)
+		delete aux;
 }
 
 void ObjectNDManager::printStructure() {
@@ -478,7 +497,15 @@ void ObjectNDManager::updateObjects(Eigen::VectorXd &cutsLocation, std::vector<c
 	int maxDimension = composingPolytopes.size() - 1;
 	int resultingDimension = camerasND.size() + 3;
 
-	std::vector<std::vector<Eigen::VectorXd>*>* currentComposingPolytopes = &composingPolytopes;
+	//std::vector<std::vector<Eigen::VectorXd>*>* currentComposingPolytopes = &composingPolytopes;
+	std::vector<std::vector<Eigen::VectorXd>*>* currentComposingPolytopes = new std::vector<std::vector<Eigen::VectorXd>*>();
+	for (int i = 0; i < composingPolytopes.size(); i++) {
+		auto aux = new std::vector<Eigen::VectorXd>();
+		for (int j = 0; j < composingPolytopes.at(i)->size(); j++) {
+			aux->push_back(composingPolytopes.at(i)->at(j));
+		}
+		currentComposingPolytopes->push_back(aux);
+	}
 
 	//calculate cuts
 	for (int currentCutIndex = 0; currentCutIndex < cutsLocation.size(); currentCutIndex++) {
@@ -580,12 +607,19 @@ void ObjectNDManager::updateObjects(Eigen::VectorXd &cutsLocation, std::vector<c
 					currentPolytopeLayerMapping[currentPolytopeIndex] = newComposingPolytopes->at(currentPolitopeDimension)->size();
 					newComposingPolytopes->at(currentPolitopeDimension)->push_back(aux);
 				}
-				
+
+				delete listOfLowerDimensionPolitopesFound;
 			}
 
 			delete previousPolytopeLayerMapping;
 			previousPolytopeLayerMapping = currentPolytopeLayerMapping;
 		}
+		delete previousPolytopeLayerMapping;
+
+		for (auto aux : *currentComposingPolytopes) {
+			delete aux;
+		}
+		delete currentComposingPolytopes;
 
 		currentComposingPolytopes = newComposingPolytopes;
 	}
@@ -605,6 +639,10 @@ void ObjectNDManager::updateObjects(Eigen::VectorXd &cutsLocation, std::vector<c
 		auto aux = currentComposingPolytopes->at(0)->at(i);
 		vertMatrix.col(i) = aux;
 	}
+
+	if (this->currentComposingPolytopes)
+		this->currentComposingPolytopes->clear();
+		delete this->currentComposingPolytopes;
 
 	this->currentComposingPolytopes = currentComposingPolytopes;
 

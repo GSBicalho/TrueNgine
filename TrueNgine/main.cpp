@@ -1,3 +1,5 @@
+
+
 #include "PropertiesWindow.h"
 #include "RenderingWindow.h"
 #include <QSurfaceFormat>
