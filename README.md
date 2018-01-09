@@ -19,6 +19,8 @@ As such, the resulting program allows the user to combine two ways of visualizin
 
 It also allows the user to rotate the shape, move around it, and also move the location and directions of all the cameras generated.
 
+The polytopes in the exemples were largely generated using [this](https://github.com/GSBicalho/Function-Approximation) code by Professor [Antonio Castlo Filho](http://conteudo.icmc.usp.br/Portal/Pessoas/Detalhes.php?id=132404).
+
 ## Cutting the Space
 This part of the rendering takes the ND model and, given a position in the last dimension, slices it so that only the part that intersects the current viewed space is seen.
 
