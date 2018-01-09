@@ -1,6 +1,6 @@
 # TrueNgine - A N-Dimensional Renderer
 
-This is an implementation an N-Dimensional Renderer, to allow the visualization of N-Dimensonal shapes through the cut of the space and perspective rendering.
+This is an implementation an N-Dimensional Renderer, to allow the visualization of N-Dimensional shapes through the cut of the space and perspective rendering.
 
 # Table of Contents
 
@@ -13,14 +13,13 @@ This is an implementation an N-Dimensional Renderer, to allow the visualization 
 - [Acknowledgments](#acknowledgments)
 
 ## Introduction
-We, normal human beings, have brains adapted for observing, interacting and imagining in 3 Dimensions. That is, quite frankly, a waste of perfectly good directions and shows a remarkable lack of ambission. That's why this program exists, to try to remedy such situation and allow the further understanding and comprehension of higher dimensional spaces.
+We, human beings, have brains adapted for observing, interacting and imagining in 3 Dimensions. Interaction is limited to height, width and depth, so, when imagining objects of such dimensions, it is simple to create a mental image and understand it. However, in mathematics, we are not limited in such a way, and it can be difficult to imagine a construct with more dimensions than we are used to. That's why this program exists, to try to allow the further understanding and comprehension of higher dimensional spaces, functions and shapes.
 
-As such, the resulting program allows the user to combine two ways of visualizing the extra dimensions. First, the Cut is applied to the first K Dimensions, then the remaining ones are rendered using perspective.
+As such, the resulting program allows the user to combine two ways of visualizing the extra dimensions. First, the Cut is applied to the first K Dimensions, and then the remaining ones are rendered using perspective.
 
-It also allows the user to rotate the shape, move around it, and also move the location and directions of all the cameras generated.
+It allows the user to rotate the shape, move around it, and also move the location and directions of all the cameras generated.
 
-The polytopes in the exemples were largely generated using [this](https://github.com/GSBicalho/Function-Approximation) code by Professor [Antonio Castlo Filho](http://conteudo.icmc.usp.br/Portal/Pessoas/Detalhes.php?id=132404).
-
+The polytopes in the examples were largely generated using [this](https://github.com/GSBicalho/Function-Approximation) code by Professor [Antonio Castlo Filho](http://conteudo.icmc.usp.br/Portal/Pessoas/Detalhes.php?id=132404).
 ## Cutting the Space
 This part of the rendering takes the ND model and, given a position in the last dimension, slices it so that only the part that intersects the current viewed space is seen.
 
@@ -50,7 +49,7 @@ After downloading and installing both libraries, set the Environment Variables `
 Open the project in Visual Studio 2017 and build it.
 
 ## Examples
-The program should open showing the classic view of the Hypercube. To the left, there will be the Properties Window, which shows the current position of the 3D and 4D cameras. It also allows you to select wheather to display only the wireframe, activate Face-Culling (in progress), and also to define in which plane to rotate the shape.
+The program should open showing the classic view of the Hypercube. To the left, there will be the Properties Window, which shows the current position of the 3D and 4D cameras. It also allows you to select whether to display only the wireframe, activate Face-Culling (in progress), and also to define in which plane to rotate the shape.
 
 ![The starting screen of the program, showing the perspective projection of a Hypercube.](https://i.imgur.com/IzJxjYX.png)
 
@@ -69,7 +68,7 @@ Clicking in `File > Open` you can open one of the other shapes found in the `Pol
 
 ## Generating Shapes
 
-There are two formats of files in the Politopes folder. They can both be used to create the same shapes, but are generated differently.
+There are two formats of files in the Polytopes folder. They can both be used to create the same shapes, but are generated differently.
 
 ### NDP Files
 NDP Files were generated (mostly) by hand. As an example here, we will use the file `Polytopes\hypercube.ndp`.
@@ -78,7 +77,7 @@ The first line contains two numbers, N and K.
 ```
 4 4
 ```
-N indicates the number of dimensions of the Space. K indicates the ammount of dimensions the shapes we will describe will have. This allows us to create 3D cubes in a 4D space, or a 4D cube defined simply by its 3D faces, which would make it "hollow". In a 3D analogy, think of a cube defined only by its faces, instead of it being defined as a "filled" shape.
+N indicates the number of dimensions of the Space. K indicates the amount of dimensions the shapes we will describe will have. This allows us to create 3D cubes in a 4D space, or a 4D cube defined simply by its 3D faces, which would make it "hollow". In a 3D analogy, think of a cube defined only by its faces, instead of it being defined as a "filled" shape.
 
 In this case, we have a Hypercube in a 4D space.
 
@@ -139,7 +138,7 @@ The first number indicates the number of vertices the shape will have. Then foll
  6 14 
  7 15
 ```
-This defines the edges of the Hypercube. We define that our Hypercube has 32 edges, and that the edge 0 is composed of the vertices 0 and 1, the edge 1 is composed by the vertices 1 and 3, and so on.
+This defines the edges of the Hypercube. We define that our Hypercube has 32 edges, and that the edge 0 is composed of the vertices 0 and 1, edge 1 is composed by the vertices 1 and 3, and so on.
 
 Then comes the faces:
 ```
@@ -169,7 +168,7 @@ Then comes the faces:
     10    22    26    30
     11    23    27    31 
 ```
-We define that our Hypercube has 24 faces and that the face 0 is composed of the edges 0, 1, 2 and 3, the face 1 is composed by the edges 4, 5, 6, 7, etc. Note that, just as the Edges(1D Shape) reference the Vertices(0D Shape), the Faces(2D Shape) reference the Edges(1D Shape).
+We define that our Hypercube has 24 faces and that the face 0 is composed of the edges 0, 1, 2 and 3, face 1 is composed by the edges 4, 5, 6, 7, etc. Note that, just as the Edges (1D Shape) reference the Vertices (0D Shape), the Faces (2D Shape) reference the Edges (1D Shape).
 
 This goes on for the remainder of the dimensions, so the Spaces we define will reference the list of Faces:
 ```
@@ -183,18 +182,18 @@ This goes on for the remainder of the dimensions, so the Spaces we define will r
  4 10 14 18 20 22
  5 11 15 19 21 23
 ```
-Here we define our Hypercube's "3D faces", which we will call Spaces. There are 8 of them, and the Space 0 is defined by the Faces 0, 1, 2, 3, 4 and 5, the Space 1 by 6, 7, 8, 9, 10 and 11, etc.
+Here we define our Hypercube's "3D faces", which we will call Spaces. There are 8 of them, and the Space 0 is defined by the Faces 0, 1, 2, 3, 4 and 5, Space 1 by 6, 7, 8, 9, 10 and 11, etc.
 
 ```
 1
  0 1 2 3 4 5 6 7
 ```
-Finally, we reach our Kth shape, the Hypercube itself, of which we have only 1, and is formed by the eight cubes we defined before.
+Finally, we reach our Kth shape, the Hypercube itself, of which we have only one, and is formed by the eight cubes we defined before.
 
 Do note that all of the shapes defined MUST be convex, otherwise the Dimensional Cut will generate erroneous shapes.
 
 ### POL Files
-POL Files were generated by [this](https://github.com/GSBicalho/Function-Approximation) MATLAB code, which was created by professor Antonio Castelo Filho and uploaded here with his permission. 
+POL Files were generated by [this](https://github.com/GSBicalho/Function-Approximation) MATLAB code, which was created by Professor Antonio Castelo Filho and uploaded here with his permission. 
 
 A full description of the program, its workings and output can be seen on the repository linked above.
 
