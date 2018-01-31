@@ -55,10 +55,6 @@ Eigen::VectorXi getPolitopesKDThatComposePolytopeND(std::vector<std::vector<Eige
 	}
 }
 
-Eigen::VectorXi orderVerticesToRing(Eigen::VectorXi &vertices, std::vector<Eigen::VectorXd>* edgeList, Eigen::VectorXi &face) {
-	return Eigen::VectorXi(0);
-}
-
 void triangulateFaces(std::vector<std::vector<Eigen::VectorXd>*>* currentComposingPolytopes) {
 	std::vector<Eigen::VectorXd>* edgeList = NULL;
 	std::vector<Eigen::VectorXd>* faceList = NULL;
@@ -100,19 +96,23 @@ ObjectNDManager::ObjectNDManager(int typeExtenson, std::ifstream &inStream, clas
 	} else if (typeExtenson == OBJECTNDMANAGER_POL_FORMAT) {
 		print("READING POL");
 		readFromPOLFormatStream(inStream);
+	} else {
+		this->numberOfDimensions = 0;
 	}
 
 	//We triangulate all faces
 	//triangulateFaces(&composingPolytopes);
 
 	// We shift every point to the same random minimal direction
-	if (composingPolytopes.at(0)->size() != 0) {
-		Eigen::VectorXd aux(composingPolytopes.at(0)->at(0).size());
-		for (int i = 0; i < composingPolytopes.at(0)->at(0).size(); i++) {
-			aux(i) = sinf(i + 1) * 1e-20f;
-		}
-		for (int i = 0; i < composingPolytopes.at(0)->size(); i++) {
-			composingPolytopes.at(0)->at(i) += aux;
+	if (composingPolytopes.size()) {
+		if (composingPolytopes.at(0)->size() != 0) {
+			Eigen::VectorXd aux(composingPolytopes.at(0)->at(0).size());
+			for (int i = 0; i < composingPolytopes.at(0)->at(0).size(); i++) {
+				aux(i) = sinf(i + 1) * 1e-10f;
+			}
+			for (int i = 0; i < composingPolytopes.at(0)->size(); i++) {
+				composingPolytopes.at(0)->at(i) += aux;
+			}
 		}
 	}
 
@@ -153,9 +153,12 @@ void ObjectNDManager::readFromNDPFormatStream(std::ifstream &inStream) {
 			if (currentDimension != 0) {
 				std::sort(polytopeAfterMapping.data(), polytopeAfterMapping.data() + polytopeAfterMapping.size(), [&](double lhs, double rhs) { return lhs < rhs; });
 			}
+
 			//Add it to polytope list
 			composingPolytopes.at(currentDimension)->push_back(polytopeAfterMapping);
 		}
+		
+		print("Dim " << currentDimension << " -> " << composingPolytopes.at(currentDimension)->size());
 	}
 
 
@@ -378,6 +381,8 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 	Eigen::MatrixXi &faceListWithoutCulling,
 	Eigen::MatrixXi &faceListWithCulling) {
 
+	if (!currentComposingPolytopes || currentComposingPolytopes->size() < 2) return;
+
 	auto edgeList = currentComposingPolytopes->at(1);
 	
 
@@ -470,7 +475,7 @@ void ObjectNDManager::generateEdgeAndFaceLists(
 
 void ObjectNDManager::setUsingCulling(bool value) {
 	useCulling = value;
-	if (!hasCalculatedCulling && useCulling) {
+	if (!hasCalculatedCulling && useCulling && currentObjects.size()) {
 		Eigen::MatrixXi edgeListWithoutCulling(2, 0);
 		Eigen::MatrixXi edgeListWithCulling(2, 0);
 		Eigen::MatrixXi faceListWithoutCulling(3, 0);
@@ -493,6 +498,8 @@ void ObjectNDManager::setUsingCulling(bool value) {
 
 void ObjectNDManager::updateObjects(Eigen::VectorXd &cutsLocation, std::vector<class CameraND> camerasND) {
 	currentObjects.clear();
+
+	if (this->composingPolytopes.size() < 2) return;
 
 	int maxDimension = composingPolytopes.size() - 1;
 	int resultingDimension = camerasND.size() + 3;

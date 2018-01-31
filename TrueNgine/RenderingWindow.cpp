@@ -128,20 +128,24 @@ void RenderingWindow::doMovement() {
 	}
 
 	if (keys[OPENGL_WINDOW_Q]) {
-		for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
-			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane2, rotPlane1, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
+		if (objectManager->composingPolytopes.size()) {
+			for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
+				objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane2, rotPlane1, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
+			}
+			objectManager->updateObjects(cutLocations, camerasND);
+			emit signalRotation(-delta_time);
 		}
-		objectManager->updateObjects(cutLocations, camerasND);
-		emit signalRotation(-delta_time);
 	}
 
 	if (keys[OPENGL_WINDOW_E]) {
-		for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
-			objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane1, rotPlane2, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
-		}
-		objectManager->updateObjects(cutLocations, camerasND);
+		if (objectManager->composingPolytopes.size()) {
+			for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
+				objectManager->composingPolytopes.at(0)->at(i) = rotateMatrixN(objectManager->numberOfDimensions, rotPlane1, rotPlane2, delta_time) * objectManager->composingPolytopes.at(0)->at(i);
+			}
+			objectManager->updateObjects(cutLocations, camerasND);
 
-		emit signalRotation(delta_time);
+			emit signalRotation(delta_time);
+		}
 	}
 
 	if (keys[OPENGL_WINDOW_O]) {
@@ -345,8 +349,8 @@ void RenderingWindow::openFile(QString openFile) {
 	rotPlane1 = 0;
 	rotPlane2 = 1;
 
-	std::string asStdString = openFile.toStdString();
-
+	std::string asStdString = openFile.toLower().toStdString();
+	print("Opening " << asStdString);
 	std::ifstream inStream(asStdString);
 	if (hasEnding(asStdString, ".ndp")) {
 		objectManager = new ObjectNDManager(OBJECTNDMANAGER_NDP_FORMAT, inStream, this);
@@ -354,29 +358,38 @@ void RenderingWindow::openFile(QString openFile) {
 	} else if (hasEnding(asStdString, ".pol")) {
 		objectManager = new ObjectNDManager(OBJECTNDMANAGER_POL_FORMAT, inStream, this);
 		isAllowingFaceculling = true;
+	} else {
+		objectManager = new ObjectNDManager(OBJECTNDMANAGER_NO_FORMAT, inStream, this);
+		isAllowingFaceculling = false;
 	}
 
 	generateCameras(objectManager->numberOfDimensions);
 	
-	if (objectManager->composingPolytopes.at(0)->size()) {
-		int polyD = objectManager->composingPolytopes.size() - 1;
-		int spaceD = objectManager->composingPolytopes.at(0)->at(0).size();
-		int maxPossibleCutsByPoly = polyD - 1;
-		int numCutsBySpace = spaceD - 3;
-		
-		if (maxPossibleCutsByPoly < 0 && numCutsBySpace < 0) {
-			emit signalPossibleNumberOfCuts(0);
-		} else {
-			emit signalPossibleNumberOfCuts(maxPossibleCutsByPoly > numCutsBySpace ? numCutsBySpace : maxPossibleCutsByPoly);
-		}
-	}
-
 	double maxValue = 0.0;
-	for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
-		double maxCoeff = objectManager->composingPolytopes.at(0)->at(i).norm();
-		if (abs(maxCoeff) > maxValue) {
-			maxValue = maxCoeff;
+
+	if (objectManager->composingPolytopes.size()) {
+		if (objectManager->composingPolytopes.at(0)->size()) {
+			int polyD = objectManager->composingPolytopes.size() - 1;
+			int spaceD = objectManager->composingPolytopes.at(0)->at(0).size();
+			int maxPossibleCutsByPoly = polyD - 1;
+			int numCutsBySpace = spaceD - 3;
+
+			if (maxPossibleCutsByPoly < 0 && numCutsBySpace < 0) {
+				emit signalPossibleNumberOfCuts(0);
+			}
+			else {
+				emit signalPossibleNumberOfCuts(maxPossibleCutsByPoly > numCutsBySpace ? numCutsBySpace : maxPossibleCutsByPoly);
+			}
 		}
+
+		for (int i = 0; i < objectManager->composingPolytopes.at(0)->size(); i++) {
+			double maxCoeff = objectManager->composingPolytopes.at(0)->at(i).norm();
+			if (abs(maxCoeff) > maxValue) {
+				maxValue = maxCoeff;
+			}
+		}
+	} else {
+		emit signalPossibleNumberOfCuts(0);
 	}
 
 	std::vector<int> cutLocationsVector;

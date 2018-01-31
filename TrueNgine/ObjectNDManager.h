@@ -2,8 +2,9 @@
 #include "ObjectND.h"
 #include <map>
 
-#define OBJECTNDMANAGER_POL_FORMAT 0
-#define OBJECTNDMANAGER_NDP_FORMAT 1
+#define OBJECTNDMANAGER_NO_FORMAT 0
+#define OBJECTNDMANAGER_POL_FORMAT 1
+#define OBJECTNDMANAGER_NDP_FORMAT 2
 
 class ObjectNDManager {
 public:
