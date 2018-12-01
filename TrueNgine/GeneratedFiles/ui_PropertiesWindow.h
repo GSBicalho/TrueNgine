@@ -29,6 +29,7 @@ class Ui_PropertiesWindowClass
 public:
     QAction *actionOpen;
     QAction *actionSet_Cut_Number;
+    QAction *actionBackground_Color;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QScrollArea *mainScrollArea;
@@ -54,6 +55,8 @@ public:
         actionOpen->setObjectName(QStringLiteral("actionOpen"));
         actionSet_Cut_Number = new QAction(PropertiesWindowClass);
         actionSet_Cut_Number->setObjectName(QStringLiteral("actionSet_Cut_Number"));
+        actionBackground_Color = new QAction(PropertiesWindowClass);
+        actionBackground_Color->setObjectName(QStringLiteral("actionBackground_Color"));
         centralWidget = new QWidget(PropertiesWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -89,6 +92,7 @@ public:
         menuBar->addAction(menuOptions->menuAction());
         menuFile->addAction(actionOpen);
         menuOptions->addAction(actionSet_Cut_Number);
+        menuOptions->addAction(actionBackground_Color);
 
         retranslateUi(PropertiesWindowClass);
 
@@ -100,6 +104,7 @@ public:
         PropertiesWindowClass->setWindowTitle(QApplication::translate("PropertiesWindowClass", "PropertiesWindow", Q_NULLPTR));
         actionOpen->setText(QApplication::translate("PropertiesWindowClass", "Open", Q_NULLPTR));
         actionSet_Cut_Number->setText(QApplication::translate("PropertiesWindowClass", "Set Cut Number", Q_NULLPTR));
+        actionBackground_Color->setText(QApplication::translate("PropertiesWindowClass", "Background Color", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("PropertiesWindowClass", "File", Q_NULLPTR));
         menuOptions->setTitle(QApplication::translate("PropertiesWindowClass", "Options", Q_NULLPTR));
     } // retranslateUi

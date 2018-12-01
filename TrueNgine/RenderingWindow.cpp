@@ -54,7 +54,7 @@ void RenderingWindow::initialize() {
 }
 
 void RenderingWindow::render() {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	//Get delta time to check how much to move
@@ -404,4 +404,16 @@ void RenderingWindow::receiveRotationPlaneChange(int axis1, int axis2) {
 	qDebug() << "New Planes of Rotation: " << axis1 << " and " << axis2;
 	rotPlane1 = axis1;
 	rotPlane2 = axis2;
+}
+
+void RenderingWindow::setBackgroundColor(float newRed, float newGreen, float newBlue) {
+	backgroundColor[0] = newRed;
+	backgroundColor[1] = newGreen;
+	backgroundColor[2] = newBlue;
+}
+
+void RenderingWindow::receiveChangeBackgroundColor(float newRed, float newGreen, float newBlue) {
+	setBackgroundColor(newRed, newGreen, newBlue);
+
+	qDebug() << "New Background Color: " << newRed << ", " << newGreen << ", " << newBlue;
 }

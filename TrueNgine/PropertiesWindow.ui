@@ -85,6 +85,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionSet_Cut_Number"/>
+    <addaction name="actionBackground_Color"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -97,6 +98,11 @@
   <action name="actionSet_Cut_Number">
    <property name="text">
     <string>Set Cut Number</string>
+   </property>
+  </action>
+  <action name="actionBackground_Color">
+   <property name="text">
+    <string>Background Color</string>
    </property>
   </action>
  </widget>

@@ -15,8 +15,11 @@ int main(int argc, char *argv[]) {
 	QSurfaceFormat format;
 	format.setSamples(16);
 
+	float startingBackgroundColor[3] = { 0.2f, 0.3f, 0.3f };
+
 	// Creating Windows
 	RenderingWindow renderingWindow;
+	renderingWindow.setBackgroundColor(startingBackgroundColor[0], startingBackgroundColor[1], startingBackgroundColor[2]);
 	renderingWindow.setFormat(format);
 	renderingWindow.resize(800, 600);
 	renderingWindow.show();
@@ -24,6 +27,7 @@ int main(int argc, char *argv[]) {
 	renderingWindow.setAnimating(true);
 
 	PropertiesWindow propertiesWindow;
+	propertiesWindow.setBackgroundColor(startingBackgroundColor[0], startingBackgroundColor[1], startingBackgroundColor[2]);
 	propertiesWindow.move(200, 200);
 	propertiesWindow.show();
 
@@ -72,6 +76,9 @@ int main(int argc, char *argv[]) {
 
 	QObject::connect(&renderingWindow, SIGNAL(signalClose()),
 		&propertiesWindow, SLOT(doClose()));
+
+	QObject::connect(&propertiesWindow, SIGNAL(signalChangeBackgroundColor(float, float, float)),
+		&renderingWindow, SLOT(receiveChangeBackgroundColor(float, float, float)));
 
 	QObject::connect(&propertiesWindow, SIGNAL(signalTest()),
 		&renderingWindow, SLOT(receiveTest()));

@@ -14,6 +14,7 @@ public:
 
 	class CameraNPropertyComponent* firstPropertyComponent;
 	class QLineEdit* rotationAmmountEdit;
+	void setBackgroundColor(float newRed, float newGreen, float newBlue);
 
 private:
 	Ui::PropertiesWindowClass ui;
@@ -21,6 +22,8 @@ private:
 	int maxNumberOfCuts = 0;
 	int currentNumberOfCuts = 0;
 	int numberOfCameras = 0;
+
+	float backgroundColor[3] = { 1.0, 1.0, 1.0 };
 
 	void generateDimensionViewing(class std::vector<int> cutLocations, class std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling, double maxValue);
 
@@ -41,6 +44,7 @@ private slots:
 
 	void receiveOpenFile();
 	void receiveOpenCutChangeWindow();
+	void receiveBackgroundColorChangeWindow();
 
 	void receiveTestButton();
 
@@ -67,4 +71,6 @@ signals:
 	void signalCutLocationChange(int cameraIndex, double newValue);
 
 	void signalRotationPlaneChange(int axis1, int axis2);
+
+	void signalChangeBackgroundColor(float newRed, float newGreen, float newBlue);
 };

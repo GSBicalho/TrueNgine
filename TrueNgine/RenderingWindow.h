@@ -19,6 +19,7 @@ public:
 	void resizeEvent(QResizeEvent* event);
 
 	void doMovement();
+	void setBackgroundColor(float newRed, float newGreen, float newBlue);
 
 	// Camera Variables
 	// The camera used to show the perspective in 3D space
@@ -44,6 +45,8 @@ private:
 
 	int rotPlane1 = 0;
 	int rotPlane2 = 1;
+
+	float backgroundColor[3] = { 1.0, 1.0, 1.0 };
 
 	//class std::vector<class ObjectND>* objectsToRender;
 	class ObjectNDManager* objectManager;
@@ -73,6 +76,8 @@ public slots:
 	void receiveCutLocationChange(int index, double newValue);
 
 	void receiveRotationPlaneChange(int axis1, int axis2);
+
+	void receiveChangeBackgroundColor(float newRed, float newGreen, float newBlue);
 
 	void receiveTest();
 
