@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_PropertiesWindow.h"
+#include "RenderingWindow.h"
 
 class PropertiesWindow : public QMainWindow
 {
@@ -14,16 +15,15 @@ public:
 
 	class CameraNPropertyComponent* firstPropertyComponent;
 	class QLineEdit* rotationAmmountEdit;
-	void setBackgroundColor(float newRed, float newGreen, float newBlue);
+	void setTargetWindow(RenderingWindow* targetWindow);
 
 private:
 	Ui::PropertiesWindowClass ui;
+	RenderingWindow* targetWindow;
 
 	int maxNumberOfCuts = 0;
 	int currentNumberOfCuts = 0;
 	int numberOfCameras = 0;
-
-	float backgroundColor[3] = { 1.0, 1.0, 1.0 };
 
 	void generateDimensionViewing(class std::vector<int> cutLocations, class std::vector<class CameraND> *cameras, class Camera3D *camera3D, bool allowFaceculling, double maxValue);
 

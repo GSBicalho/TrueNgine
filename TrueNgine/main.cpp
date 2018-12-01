@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 	renderingWindow.setAnimating(true);
 
 	PropertiesWindow propertiesWindow;
-	propertiesWindow.setBackgroundColor(startingBackgroundColor[0], startingBackgroundColor[1], startingBackgroundColor[2]);
+	propertiesWindow.setTargetWindow(&renderingWindow);
 	propertiesWindow.move(200, 200);
 	propertiesWindow.show();
 

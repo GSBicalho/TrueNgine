@@ -22,6 +22,7 @@
 #include "CutNPropertyComponent.h"
 #include "Camera3D.h"
 #include "CameraND.h"
+#include "RenderingWindow.h"
 
 PropertiesWindow::PropertiesWindow(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
@@ -279,21 +280,24 @@ void PropertiesWindow::receiveOpenCutChangeWindow() {
 	}
 }
 
-void PropertiesWindow::setBackgroundColor(float newRed, float newGreen, float newBlue) {
-	backgroundColor[0] = newRed;
-	backgroundColor[1] = newGreen;
-	backgroundColor[2] = newBlue;
+void PropertiesWindow::setTargetWindow(RenderingWindow* targetWindow) {
+	this->targetWindow = targetWindow;
 }
 
 void PropertiesWindow::receiveBackgroundColorChangeWindow() {
-	QColor chosenColor = QColorDialog::getColor(QColor((int)(255 * backgroundColor[0]), (int)(255 * backgroundColor[1]), (int)(255 * backgroundColor[2])), this, "Background Color");
+
+	QColor chosenColor = QColorDialog::getColor(
+		QColor((int)(255 * targetWindow->backgroundColor[0]), 
+			   (int)(255 * targetWindow->backgroundColor[1]), 
+			   (int)(255 * targetWindow->backgroundColor[2])),
+		this, 
+		"Background Color");
 
 	if (chosenColor.isValid()) {
 		float red = ((float)(chosenColor.red())) / 255.0;
 		float green = ((float)(chosenColor.green())) / 255.0;
 		float blue = ((float)(chosenColor.blue())) / 255.0;
 
-		setBackgroundColor(red, green, blue);
 		emit signalChangeBackgroundColor(red, green, blue);
 	}
 }

@@ -19,6 +19,8 @@ public:
 	void resizeEvent(QResizeEvent* event);
 
 	void doMovement();
+
+	float backgroundColor[3] = { 1.0, 1.0, 1.0 };
 	void setBackgroundColor(float newRed, float newGreen, float newBlue);
 
 	// Camera Variables
@@ -45,8 +47,6 @@ private:
 
 	int rotPlane1 = 0;
 	int rotPlane2 = 1;
-
-	float backgroundColor[3] = { 1.0, 1.0, 1.0 };
 
 	//class std::vector<class ObjectND>* objectsToRender;
 	class ObjectNDManager* objectManager;
